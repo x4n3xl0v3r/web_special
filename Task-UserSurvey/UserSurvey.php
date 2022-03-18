@@ -5,6 +5,7 @@ header('Content-Type: text/plain');
 /**
  * Survey реализует хранение данных об анкете 
  * Если у класса требуется сменить поле $email, то тогда следует создать новый объект Survey с новым $email и скопировать в него остальные данные.
+ * $surveyValidationLevel определяет, какие исключения будут выбрасывать сеттеры (и связанные с ними методы), полезно дял отладки
  * (!) + Поля first_name и last_name имеют ограничение по длине
  *     + Поле email обязательно к заполнению и должно 
  *       быть синтаксически верным email-адресом
@@ -13,11 +14,13 @@ class Survey
 {
     protected array $data;
     protected static array $validators;
+    protected static int   $surveyValidationLevel; // 0 - без валидации; 1 - только невалидные параметры; >1 -невалидные и отброшенные параметры
     
     /* * * * * * * * * * * * * * * * * * */
 
     public function __construct(string $_email) 
     {
+        $this->surveyValidationLevel = 0; 
         $this->data = array();
         $this->data['email'] = $_email;
         $this->data['age'] = '';  // Храним всё в виде строк для упрощения реализации merge
@@ -114,12 +117,17 @@ class Survey
                 $this->data[$key] = strval($value);
                 return true;
             }
-            // else
-            // {
-            //     debug_print_backtrace();
-            //     echo 'Survey::_set() - skipped value[' . $key . "]\n";
-            // }
+
+            if ($this->surveyValidationLevel > 0) 
+            {
+                throw new Exception('Survey::_set(): paramer not valid; key=<' . $key . '> value=<' . $value . ">\n");
+                return false;
+            }
         }
+
+        if ($surveyValidationLevel > 1)
+            throw new Exception('Survey::_set(): bad key; key=<' . $key . '> value=<' . $value . ">\n");
+        
         return false;
     }
 }
@@ -402,13 +410,13 @@ class SurveyPrinter
 
 /* * * * * * * * * * * * * * * * * * * * */
 
-$strictValidation = true;
+$strictURLValidation = true;
 
 /* * * * * * * * * * * * * * * * * * * * */
 
 $fileStorage = new SurveyFileStorage();
 $fileStorage->setFilesLocation('data');
-$currSurvey = RequestSurveyLoader::loadSurvey($_SERVER['QUERY_STRING'], $strictValidation);
+$currSurvey = RequestSurveyLoader::loadSurvey($_SERVER['QUERY_STRING'], $strictURLValidation);
 
 if (!is_null($currSurvey))
 {
