@@ -3,9 +3,11 @@
 header('Content-Type: text/plain');
 
 /**
- * Экземпляр класса идентифицируется по $email.
+ * Survey реализует хранение данных об анкете 
  * Если у класса требуется сменить поле $email, то тогда следует создать новый объект Survey с новым $email и скопировать в него остальные данные.
- * Важно! Поля firstName и lastName имеют ограничение по длине 
+ * (!) + Поля first_name и last_name имеют ограничение по длине
+ *     + Поле email обязательно к заполнению и должно 
+ *       быть синтаксически верным email-адресом
  */
 class Survey
 {
@@ -233,7 +235,6 @@ class SurveyFileStorage
      * Внимание! Функция изменяет состояние переданного объекта
      * (выполняет Survey::_merge() для $inst с другим экземпляром Survey, считанным из файла).
      * Если это поведение нежелательно, используй overwriteSurveyImmutable
-     * 
      */ 
     public function overwriteSurveyMutable(Survey $inst): ?bool
     {
@@ -293,6 +294,7 @@ class SurveyFileStorage
         }
         return false;
     }
+
     /**
      * Чтение объекта Survey из файла.
      * При возникновении ошибок возвращает null, иначе - считанный Survey
@@ -374,7 +376,6 @@ class SurveyPrinter
     }
 }
 
-
 $fileStorage = new SurveyFileStorage();
 $fileStorage->setFilesLocation('data');
 $currSurvey = RequestSurveyLoader::loadSurvey($_SERVER['QUERY_STRING']);
@@ -382,5 +383,3 @@ $fileStorage->overwriteSurveyMutable($currSurvey);
 
 echo "Информация о анкете:\n";
 SurveyPrinter::printSurvey($currSurvey);
-
-// localhost:8080/SurveyOOP2.php?email=kekkabubu@mail.ru&age=90
