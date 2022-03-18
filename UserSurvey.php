@@ -297,9 +297,12 @@ class SurveyFileStorage
 
     /**
      * Чтение объекта Survey из файла.
-     * При возникновении ошибок возвращает null, иначе - считанный Survey
+     * При возникновении ошибок возвращает null, иначе - считанный Survey.
+     * Strict отвечает за игнорирование невалидных параметров при чтении.
+     *   Strict=false: невалидные параметры будут отброшены, а Survey возвращен
+     *   Strict=true : при хоть 1 невалидном параметре будет возвращен null
      */
-    public function readSurvey(string $_email): ?Survey
+    public function readSurvey(string $_email, bool $strict=true): ?Survey
     {
         $resolvedName = $this->createFileName($_email);
         $userData = array();
@@ -335,13 +338,20 @@ class SurveyFileStorage
             
             fclose($hFile);
         }
+        
         $surveyInstance = new Survey($_email);
-        if ($surveyInstance->mergeWithArray($userData))
-            return $surveyInstance;
-        else
-            return null;  // Попался как минимум 1 невалидный параметр. Возможно, файл поврежден или изменен извне
-    }
+        $mergeState = $surveyInstance->mergeWithArray($userData);
 
+        if ($strict)
+        {
+            if ($mergeState)
+                return $surveyInstance;
+            else
+                return null;  // Попался как минимум 1 невалидный параметр. Возможно, файл поврежден или изменен извне
+        }
+        else
+            return $surveyInstance;
+    }
     /* * * * * * * * * * * * * * * */
 
     private function createFileName(string $fileKey): ?string
