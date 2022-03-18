@@ -69,6 +69,10 @@ class Survey
         return (new ArrayObject($this->data))->getArrayCopy();
     }
 
+    /**
+     * Реализует "накопительное" присвоение параметров от другого
+     * экземпляра Survey к текущему
+     */
     public function mergeWithSurvey(Survey $other): ?bool
     {
         $otherData = $other->dump();
@@ -94,6 +98,11 @@ class Survey
         return $opstate;
     }
 
+    /**
+     * Устанавливает значение параметра по ключу, предварительно прогнав его 
+     * через ассоциированный с к ключом валидатор и в конце возвращает BOOL 
+     * в зависимости от того, был ли установлен параметр
+     */
     private function _set(string $key, string $value): ?bool
     {
         if (array_key_exists($key, $this->data))
@@ -125,6 +134,9 @@ class RequestSurveyLoader
         }
     }
 
+    /**
+     * Превращает QUERY_STRING в ассоциативный массив
+     */
     private static function toMap(string $reqString): ?array
     {
         $retMap = array();
@@ -146,13 +158,12 @@ class RequestSurveyLoader
 
 class SurveyFileStorage
 {
-    private string $dataFilesLocation;  // Директория, где хранятся данные пользователей
-    private string $dataFormatDelimiter;
-    private string $pathDelimiter;
-    private string $pathExt;
-    private static array $dataKeys;
+    private string $dataFilesLocation;   // Директория, где хранятся данные пользователей. По умолчанию 'data'
+    private string $dataFormatDelimiter; // Разделитель внутри файла. по умолчанию ':'
+    private string $pathDelimiter;       // Разделитель FS путей. Автовыбор в зависимости от системы
+    private string $pathExt;             // Расширение файла
+    private static array $dataKeys;      // Таблица для трансляции параметров из URL в параметры файла и наоборот 
 
-    const FILENAME_EXTENSION = 'usrdat';
     const OS_DELIMITER_WIN = '\\';
     const OS_DELIMITER_UNIX = '/';
 
@@ -199,9 +210,28 @@ class SurveyFileStorage
         return $this->dataFilesLocation;
     }
 
+    /** 
+     * Поскольку в файловом пути могут использоваться не все символы,
+     * отводим на расширение файла только буквы и цифры.
+     */
+    public function setFileExtension(string $ext): ?bool
+    {
+        if (ctype_alnum($ext))
+        {
+            $this->pathExt;
+            return true;
+        }
+        return false;
+    }
+
+    public function getFileExtension(): ?string
+    {
+        return $this->pathExt;
+    }
+
     /**
      * Внимание! Функция изменяет состояние переданного объекта
-     * (выполняет ._merge для $inst с экземпляром Survey, считанным из файла).
+     * (выполняет Survey::_merge() для $inst с другим экземпляром Survey, считанным из файла).
      * Если это поведение нежелательно, используй overwriteSurveyImmutable
      * 
      */ 
@@ -238,6 +268,10 @@ class SurveyFileStorage
         return $this->overwriteSurveyMutable($newInstance);
     }
 
+    /**
+     * Запись объекта Survey в файл
+     * При возникновении ошибок возвращает false, иначе - true
+     */
     public function writeSurvey(Survey $inst): ?bool
     {
         if ($this->repair($this->dataFilesLocation))
@@ -259,7 +293,10 @@ class SurveyFileStorage
         }
         return false;
     }
-
+    /**
+     * Чтение объекта Survey из файла.
+     * При возникновении ошибок возвращает null, иначе - считанный Survey
+     */
     public function readSurvey(string $_email): ?Survey
     {
         $resolvedName = $this->createFileName($_email);
@@ -308,6 +345,12 @@ class SurveyFileStorage
         return $this->dataFilesLocation . $this->pathDelimiter . $fileKey . '.' . $this->pathExt;
     }
 
+    /**
+     * Проверяет наличие заданной для сохранения директории и,
+     * в случае отсутствия, пытается её создать.
+     * (!) Может возвращать ошибку, если прав для создания директории
+     *     недостаточно (E_WARNING)
+     */
     private function repair($_tryPath): ?bool
     {
         $successed = true;
