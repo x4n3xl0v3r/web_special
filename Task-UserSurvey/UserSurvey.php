@@ -114,6 +114,11 @@ class Survey
                 $this->data[$key] = strval($value);
                 return true;
             }
+            // else
+            // {
+            //     debug_print_backtrace();
+            //     echo 'Survey::_set() - skipped value[' . $key . "]\n";
+            // }
         }
         return false;
     }
@@ -121,14 +126,21 @@ class Survey
 
 class RequestSurveyLoader
 {
-    public static function loadSurvey(string $reqString): ?Survey
+    /**
+     * Параметр strict говорит о том, как поступать, если в URL переданы невалидные значения
+     *   strict=false: невалидные параметры не будут заполнены, экземпляр Survey будет возвращен
+     *   strict=true : при первом же появлении невалидного параметра будет возвращен null
+     */
+    public static function loadSurvey(string $reqString, bool $strict=false): ?Survey
     {
         $args = RequestSurveyLoader::toMap($reqString);
         if (array_key_exists('email', $args))
         {
             $surveyInstance = new Survey($args['email']);
-            $surveyInstance->mergeWithArray($args);
-            return $surveyInstance;
+            if ($surveyInstance->mergeWithArray($args))
+                return $surveyInstance;
+            else
+                return null;
         }
         else
         {
@@ -297,9 +309,12 @@ class SurveyFileStorage
 
     /**
      * Чтение объекта Survey из файла.
-     * При возникновении ошибок возвращает null, иначе - считанный Survey
+     * При возникновении ошибок возвращает null, иначе - считанный Survey.
+     * strict отвечает за игнорирование невалидных параметров при чтении.
+     *   strict=false: невалидные параметры будут отброшены, а Survey возвращен
+     *   strict=true : при хоть 1 невалидном параметре будет возвращен null
      */
-    public function readSurvey(string $_email): ?Survey
+    public function readSurvey(string $_email, bool $strict=true): ?Survey
     {
         $resolvedName = $this->createFileName($_email);
         $userData = array();
@@ -335,11 +350,20 @@ class SurveyFileStorage
             
             fclose($hFile);
         }
+        
         $surveyInstance = new Survey($_email);
-        $surveyInstance->mergeWithArray($userData);
-        return $surveyInstance;
-    }
+        $mergeState = $surveyInstance->mergeWithArray($userData);
 
+        if ($strict)
+        {
+            if ($mergeState)
+                return $surveyInstance;
+            else
+                return null;  // Попался как минимум 1 невалидный параметр. Возможно, файл поврежден или изменен извне
+        }
+        else
+            return $surveyInstance;
+    }
     /* * * * * * * * * * * * * * * */
 
     private function createFileName(string $fileKey): ?string
@@ -376,10 +400,24 @@ class SurveyPrinter
     }
 }
 
+/* * * * * * * * * * * * * * * * * * * * */
+
+$strictValidation = true;
+
+/* * * * * * * * * * * * * * * * * * * * */
+
 $fileStorage = new SurveyFileStorage();
 $fileStorage->setFilesLocation('data');
-$currSurvey = RequestSurveyLoader::loadSurvey($_SERVER['QUERY_STRING']);
-$fileStorage->overwriteSurveyMutable($currSurvey);
+$currSurvey = RequestSurveyLoader::loadSurvey($_SERVER['QUERY_STRING'], $strictValidation);
 
-echo "Информация о анкете:\n";
-SurveyPrinter::printSurvey($currSurvey);
+if (!is_null($currSurvey))
+{
+    $fileStorage->overwriteSurveyMutable($currSurvey);
+
+    echo "Информация о анкете:\n";
+    SurveyPrinter::printSurvey($currSurvey);
+}
+else
+{
+    echo "invalid input\n";
+}
