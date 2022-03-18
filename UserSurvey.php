@@ -20,7 +20,7 @@ class Survey
     {
         $this->data = array();
         $this->data['email'] = $_email;
-        $this->data['age'] = '';
+        $this->data['age'] = '';  // Храним всё в виде строк для упрощения реализации merge
         $this->data['first_name'] = '';
         $this->data['last_name'] = '';
         $this->validators = array(
