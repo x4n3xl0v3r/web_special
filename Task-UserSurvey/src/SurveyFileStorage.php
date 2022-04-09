@@ -84,7 +84,6 @@ class SurveyFileStorage
     public function overwriteSurveyMutable(Survey $inst): ?bool
     {
         $email = $inst->getEmail();
-        # $email = $inst->getParameter(Survey::SURVEY_EMAIL);
         $filename = $this->createFileName($email);
         
         if ($email === '')
