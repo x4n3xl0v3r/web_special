@@ -23,7 +23,7 @@ class Survey
     public function __construct(string $_email) 
     {
         self::$surveyValidationLevel = 0;
-        $this->data = array();
+        $this->data = [];
         $this->data[self::SURVEY_EMAIL] = $_email;
         $this->data[self::SURVEY_AGE] = '';  // Храним всё в виде строк для упрощения реализации merge
         $this->data[self::SURVEY_FIRST_NAME] = '';
