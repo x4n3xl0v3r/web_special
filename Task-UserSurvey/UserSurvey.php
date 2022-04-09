@@ -2,10 +2,7 @@
 
 header('Content-Type: text/plain');
 
-require_once('src/Survey.php');
-require_once('src/SurveyFileStorage.php');
-require_once('src/RequestSurveyLoader.php');
-require_once('src/SurveyPrinter.php');
+require_once('src/common.inc.php');
 
 /* * * * * * * * * * * * * * * * * * * * */
 # При невалидном вводе сразу выводим ошибку (если false то поведение зависит от настроек Survey)

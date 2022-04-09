@@ -33,7 +33,7 @@ class SurveyFileStorage
                 $this->pathDelimiter = self::OS_DELIMITER_UNIX;
         }
 
-        $this->dataKeys = [
+        self::$dataKeys = [
             Survey::SURVEY_FIRST_NAME=>self::PARAM_FIRSTNAME,
             Survey::SURVEY_LAST_NAME =>self::PARAM_LASTNAME,
             Survey::SURVEY_EMAIL     =>self::PARAM_EMAIL,
@@ -64,7 +64,7 @@ class SurveyFileStorage
     {
         if (ctype_alnum($ext))
         {
-            $this->pathExt;
+            $this->pathExt = $ext;
             return true;
         }
         return false;
@@ -126,7 +126,7 @@ class SurveyFileStorage
             $opstate = true;
             foreach ($data as $key=>$value)
             {
-                $opstate &= fwrite($hFile, $this->dataKeys[$key] . $this->dataFormatDelimiter . ' ' . $value . "\n");
+                $opstate &= fwrite($hFile, self::$dataKeys[$key] . $this->dataFormatDelimiter . ' ' . $value . "\n");
                 if ($opstate === false)
                     break;
             }
@@ -150,6 +150,7 @@ class SurveyFileStorage
         if (file_exists($resolvedName)) 
         {
             if ($hFile = $this->openFile($_email))
+            {
                 while ($line = fgets($hFile))  
                 {
                     $line = trim($line); 
@@ -160,12 +161,12 @@ class SurveyFileStorage
                     // Разделяем ключ и значение по делимитеру
                     if (($delimiterPos === false) & (strlen($line) !== 0))                  // файл поврежден, не работаем с ним
                     {
-                        fclose($hfile);
+                        fclose($hFile);
                         return null;  
                     }
                
                     $parameterName = substr($line, 0, $delimiterPos); 
-                    $translatedKey = array_search($parameterName, $this->dataKeys);
+                    $translatedKey = array_search($parameterName, self::$dataKeys);
                     if ($translatedKey !== false)
                         $userData[$translatedKey] = substr($line, $delimiterPos + 2);
                 }

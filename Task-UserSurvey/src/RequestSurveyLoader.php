@@ -13,10 +13,11 @@ class RequestSurveyLoader
         if (array_key_exists('email', $args))
         {
             $surveyInstance = new Survey($args['email']);
-            if ($surveyInstance->mergeWithArray($args))
+            $mergeStatus = $surveyInstance->mergeWithArray($args);
+            if (!$strict)
                 return $surveyInstance;
             else
-                return null;
+                return $mergeStatus ? $surveyInstance : null;
         }
         else
         {
@@ -29,7 +30,7 @@ class RequestSurveyLoader
      */
     private static function toMap(string $reqString): ?array
     {
-        $retMap = array();
+        $retMap = [];
         $strings = explode("&", $reqString);
         foreach ($strings as $value)
         {

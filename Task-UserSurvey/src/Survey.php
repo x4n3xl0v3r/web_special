@@ -22,14 +22,14 @@ class Survey
 
     public function __construct(string $_email) 
     {
-        $this->surveyValidationLevel = 0; 
+        self::$surveyValidationLevel = 0;
         $this->data = array();
         $this->data[self::SURVEY_EMAIL] = $_email;
         $this->data[self::SURVEY_AGE] = '';  // Храним всё в виде строк для упрощения реализации merge
         $this->data[self::SURVEY_FIRST_NAME] = '';
         $this->data[self::SURVEY_LAST_NAME] = '';
 
-        $this->validators = [
+        self::$validators = [
             self::SURVEY_EMAIL     =>function($x) { return filter_var($x, FILTER_VALIDATE_MAIL); },
             self::SURVEY_AGE       =>function($x) { $y = intval($x); return ($y > 0) & ($y < 120); },
             self::SURVEY_FIRST_NAME=>function($x) { return strlen($x) < 512; },
@@ -120,28 +120,26 @@ class Survey
     #endregion
 
     /**
-     * Устанавливает значение параметра по ключу, предварительно прогнав его 
-     * через ассоциированный с к ключом валидатор и в конце возвращает BOOL 
+     * Устанавливает значение параметра по ключу, предварительно прогнав его
+     * через ассоциированный с к ключом валидатор и в конце возвращает BOOL
      * в зависимости от того, был ли установлен параметр
+     * @throws Exception
      */
     private function _set(string $key, string $value): ?bool
     {
         if (array_key_exists($key, $this->data))
         {
-            if ($this->validators[$key]($value))
+            if (self::$validators[$key]($value))
             {
                 $this->data[$key] = strval($value);
                 return true;
             }
 
-            if ($this->surveyValidationLevel > 0) 
-            {
+            if (self::$surveyValidationLevel > 0)
                 throw new Exception('Survey::_set(): paramer not valid; key=<' . $key . '> value=<' . $value . ">\n");
-                return false;
-            }
         }
 
-        if ($surveyValidationLevel > 1)
+        if (self::$surveyValidationLevel > 1)
             throw new Exception('Survey::_set(): bad key; key=<' . $key . '> value=<' . $value . ">\n");
         
         return false;
