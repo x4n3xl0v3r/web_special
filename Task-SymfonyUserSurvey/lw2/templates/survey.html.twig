@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SURVEY INFO</title>
+    </head>
+    <body>
+        {% if survey_parameters is not empty %}
+            {% for key, value in survey_parameters %}
+                <div>{{ key }} : {{ value }}</div>
+            {% endfor %}
+        {%  endif %}
+    </body>
+</html>
