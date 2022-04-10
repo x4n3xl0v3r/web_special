@@ -168,6 +168,6 @@ class __TwigTemplate_fa45a258510a7384fa5472dff3c75694a26452cf084dcc39bdacd8ba0d8
 
     {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: false }) }}
 {% endblock %}
-", "@WebProfiler/Collector/ajax.html.twig", "C:\\Users\\karma\\php_projects\\lw2\\vendor\\symfony\\web-profiler-bundle\\Resources\\views\\Collector\\ajax.html.twig");
+", "@WebProfiler/Collector/ajax.html.twig", "C:\\Users\\karma\\Desktop\\progs NODELETE\\web_special\\web_special\\Task-SymfonyUserSurvey\\lw2\\vendor\\symfony\\web-profiler-bundle\\Resources\\views\\Collector\\ajax.html.twig");
     }
 }

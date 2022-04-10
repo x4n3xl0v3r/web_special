@@ -10,7 +10,7 @@ class UserSurvey
     private SurveyFileStorage $fileStorage;
     private RequestSurveyLoader $requestLoader;
     private SurveyPrinter $surveyPrinter;
-    private Survey $lastSurvey;
+    private ?Survey $lastSurvey;
 
     public function __construct(string $_filesLocation, bool $_strictUrlValid=true)
     {
@@ -26,12 +26,24 @@ class UserSurvey
 
     public function saveSurvey(): ?Survey
     {
-        $currSurvey = $this->requestLoader->loadSurvey($_SERVER['QUERY_STRING']);
+        $currSurvey = $this->loadSurvey();
         if (!is_null($currSurvey))
             $this->fileStorage->overwriteSurveyMutable($currSurvey);
 
         $this->lastSurvey = $currSurvey;
         return $currSurvey;
+    }
+
+    public function loadSurvey(): ?Survey
+    {
+        return $this->requestLoader->loadSurvey($_SERVER["QUERY_STRING"]);
+    }
+
+    public function getSurveyFromFile(): ?Survey
+    {
+        $args = $this->requestLoader::toMap($_SERVER['QUERY_STRING']);
+        $emailKey = array_key_exists(Survey::SURVEY_EMAIL, $args) ? $args[Survey::SURVEY_EMAIL] : '';
+        return ($emailKey === '') ? null : $this->fileStorage->readSurvey($emailKey);
     }
 
     public function getSurveyInfoString(?Survey $instance): string

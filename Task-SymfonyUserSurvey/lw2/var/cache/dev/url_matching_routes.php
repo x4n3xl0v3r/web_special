@@ -14,6 +14,8 @@ return [
         '/_profiler/phpinfo' => [[['_route' => '_profiler_phpinfo', '_controller' => 'web_profiler.controller.profiler::phpinfoAction'], null, null, null, false, false, null]],
         '/_profiler/open' => [[['_route' => '_profiler_open_file', '_controller' => 'web_profiler.controller.profiler::openAction'], null, null, null, false, false, null]],
         '/user-survey' => [[['_route' => 'survey', '_controller' => 'App\\Controller\\SurveyController::processSurvey'], null, null, null, false, false, null]],
+        '/save-survey' => [[['_route' => 'save_survey', '_controller' => 'App\\Controller\\SurveyController::saveSurvey'], null, null, null, false, false, null]],
+        '/print-survey' => [[['_route' => 'print_survey', '_controller' => 'App\\Controller\\SurveyController::printSurvey'], null, null, null, false, false, null]],
     ],
     [ // $regexpList
         0 => '{^(?'

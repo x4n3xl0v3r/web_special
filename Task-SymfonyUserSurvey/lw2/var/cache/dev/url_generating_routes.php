@@ -16,4 +16,6 @@ return [
     '_profiler_exception' => [['token'], ['_controller' => 'web_profiler.controller.exception_panel::body'], [], [['text', '/exception'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], [], []],
     '_profiler_exception_css' => [['token'], ['_controller' => 'web_profiler.controller.exception_panel::stylesheet'], [], [['text', '/exception.css'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], [], []],
     'survey' => [[], ['_controller' => 'App\\Controller\\SurveyController::processSurvey'], [], [['text', '/user-survey']], [], [], []],
+    'save_survey' => [[], ['_controller' => 'App\\Controller\\SurveyController::saveSurvey'], [], [['text', '/save-survey']], [], [], []],
+    'print_survey' => [[], ['_controller' => 'App\\Controller\\SurveyController::printSurvey'], [], [['text', '/print-survey']], [], [], []],
 ];

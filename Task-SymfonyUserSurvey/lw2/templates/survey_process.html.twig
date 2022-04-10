@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SURVEY INFO</title>
+    </head>
+    <body>
+        {% if survey_parsed %}
+            <div>Survey updated successfully</div>
+        {% else %}
+            <div>Invalid arguments passed, lookup from database</div>
+        {% endif %}
+
+        <div>----</div>
+
+        {% if survey_parameters is not empty %}
+            {% for key, value in survey_parameters %}
+                <div>{{ key }} : {{ value }}</div>
+            {% endfor %}
+        {% else %}
+            <div>EMPTY</div>
+        {%  endif %}
+
+        <div>----</div>
+    </body>
+</html>

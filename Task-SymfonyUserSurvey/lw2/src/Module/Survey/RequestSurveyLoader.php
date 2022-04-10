@@ -38,7 +38,7 @@ class RequestSurveyLoader
     /**
      * Превращает QUERY_STRING в ассоциативный массив
      */
-    private static function toMap(string $reqString): ?array
+    public static function toMap(string $reqString): ?array
     {
         $retMap = [];
         $strings = explode("&", $reqString);

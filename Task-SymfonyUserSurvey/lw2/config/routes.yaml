@@ -4,3 +4,9 @@
 survey:
   path: /user-survey
   controller: App\Controller\SurveyController::processSurvey
+save_survey:
+  path: /save-survey
+  controller: App\Controller\SurveyController::saveSurvey
+print_survey:
+  path: /print-survey
+  controller: App\Controller\SurveyController::printSurvey
