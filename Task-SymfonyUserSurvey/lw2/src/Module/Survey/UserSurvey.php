@@ -27,7 +27,7 @@ class UserSurvey
     public function saveSurvey(): ?Survey
     {
         $currSurvey = $this->loadSurvey();
-        if (!is_null($currSurvey))
+        if ($currSurvey !== null)
             $this->fileStorage->overwriteSurveyMutable($currSurvey);
 
         $this->lastSurvey = $currSurvey;
