@@ -7,3 +7,11 @@ d8cfaa,127.0.0.1,GET,http://127.0.0.1:8000/save-survey?age=3&email=ddd%40mail.ru
 0c6ad9,127.0.0.1,GET,http://127.0.0.1:8000/print-survey?age=3&email=ddd%40mail.ru,1649634353,,200
 bcd362,127.0.0.1,GET,http://127.0.0.1:8000/print-survey?email=ebiq%40mail.ru,1649634365,,200
 f37792,127.0.0.1,GET,http://127.0.0.1:8000/print-survey?email=ebiq%40mail.ru,1649634413,,200
+49d607,127.0.0.1,GET,http://127.0.0.1:8000/,1649640090,,404
+176605,127.0.0.1,GET,http://127.0.0.1:8000/user-survey?email=ebiq%40mail.ru&first_name=pasha,1649640098,,200
+8a361b,127.0.0.1,GET,http://127.0.0.1:8000/user-survey?email=ebiq%40mail.ru&first_name=pahander,1649640104,,200
+c60bf6,127.0.0.1,GET,http://127.0.0.1:8000/user-survey?email=ebiq%40mail.ru&first_name=pashoq,1649640110,,200
+47e0cc,127.0.0.1,GET,http://127.0.0.1:8000/user-survey?email=ebiq%40mail.ru&first_name=pahander,1649640183,,200
+ea7614,127.0.0.1,GET,http://127.0.0.1:8000/user-survey?email=ebiq%40mail.ru&first_name=paha,1649640184,,200
+f1d0be,127.0.0.1,GET,http://127.0.0.1:8000/user-survey?age=34234&email=ebiq%40mail.ru&first_name=paha,1649640188,,200
+58c66c,127.0.0.1,GET,http://127.0.0.1:8000/user-survey?age=34234&email=ebiq%40mail.ru&first_name=pxasdasdha,1649640199,,200

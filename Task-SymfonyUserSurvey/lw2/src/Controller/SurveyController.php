@@ -3,19 +3,12 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Psr\Container\ContainerInterface;
 use App\Module\Survey\UserSurvey;
 
 require_once dirname(__DIR__) . '../Module/Survey/UserSurvey.php';
 
 class SurveyController extends AbstractController
 {
-    private int $ctr;
-    public function __construct()
-    {
-        $this->ctr = 0;
-    }
     public function processSurvey()
     {
         $userSurveyInstance = new UserSurvey('data', true);
