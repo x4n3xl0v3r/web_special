@@ -14,7 +14,7 @@ $fileStorage = new SurveyFileStorage();
 $fileStorage->setFilesLocation('data');
 $currSurvey = RequestSurveyLoader::loadSurvey($_SERVER['QUERY_STRING'], $strictURLValidation);
 
-if (!is_null($currSurvey))
+if ($currSurvey !== null)
 {
     $fileStorage->overwriteSurveyMutable($currSurvey);
 

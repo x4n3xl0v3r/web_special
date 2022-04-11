@@ -23,15 +23,7 @@ class SurveyFileStorage
         $this->dataFilesLocation = '';
         $this->dataFormatDelimiter = ':';
         $this->pathExt = 'usrdat';
-
-        switch (strtolower(PHP_OS_FAMILY))
-        {
-            case 'windows':
-                $this->pathDelimiter = self::OS_DELIMITER_WIN;
-                break;
-            default:
-                $this->pathDelimiter = self::OS_DELIMITER_UNIX;
-        }
+        $this->pathDelimiter = DIRECTORY_SEPARATOR;
 
         self::$dataKeys = [
             Survey::SURVEY_FIRST_NAME=>self::PARAM_FIRSTNAME,
@@ -92,7 +84,7 @@ class SurveyFileStorage
         if (file_exists($filename))
         {
             $existsSurvey = $this->readSurvey($email);
-            if (!is_null($existsSurvey))
+            if ($existsSurvey !== null)
                 $inst->mergeWithSurvey($existsSurvey);
 
             unlink($filename);
@@ -146,7 +138,7 @@ class SurveyFileStorage
     public function readSurvey(string $_email, bool $strict=true): ?Survey
     {
         $resolvedName = $this->createFileName($_email);
-        $userData = array();
+        $userData = [];
         if (file_exists($resolvedName)) 
         {
             if ($hFile = $this->openFile($_email))

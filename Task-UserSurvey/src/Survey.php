@@ -30,10 +30,10 @@ class Survey
         $this->data[self::SURVEY_LAST_NAME] = '';
 
         self::$validators = [
-            self::SURVEY_EMAIL     =>function($x) { return filter_var($x, FILTER_VALIDATE_MAIL); },
-            self::SURVEY_AGE       =>function($x) { $y = intval($x); return ($y > 0) & ($y < 120); },
-            self::SURVEY_FIRST_NAME=>function($x) { return strlen($x) < 512; },
-            self::SURVEY_LAST_NAME =>function($x) { return strlen($x) < 512; },
+            self::SURVEY_EMAIL     =>static function($x) { return filter_var($x, FILTER_VALIDATE_MAIL); },
+            self::SURVEY_AGE       =>static function($x) { $y = intval($x); return ($x === '') | (($y > 0) & ($y < 120)); },
+            self::SURVEY_FIRST_NAME=>static function($x) { return strlen($x) < 512; },
+            self::SURVEY_LAST_NAME =>static function($x) { return strlen($x) < 512; },
         ];
     }
     #region getters,setters
@@ -131,7 +131,7 @@ class Survey
         {
             if (self::$validators[$key]($value))
             {
-                $this->data[$key] = strval($value);
+                $this->data[$key] = $value;
                 return true;
             }
 
